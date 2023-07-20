@@ -1,6 +1,6 @@
+import 'package:authentication_task/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
-import '../../../constants.dart';
 
 class DefaultButton extends StatelessWidget {
   final String text;
@@ -52,49 +52,3 @@ class DefaultButton extends StatelessWidget {
   }
 }
 
-class SecondaryButton extends StatelessWidget {
-  //TODO : remove secondary button - only use defaultButton
-  final String text;
-  final VoidCallback onPressed;
-  final double width;
-  final double height;
-  final double fontSize;
-
-  const SecondaryButton({
-    Key? key,
-    required this.text,
-    required this.onPressed,
-    this.width = 200.0,
-    this.height = mainButtonsSize,
-    this.fontSize = mainFontSize,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: width.w,
-      height: height.h,
-      child: TextButton(
-        style: ButtonStyle(
-            shadowColor: MaterialStateProperty.all<Color>(lightGreyButtons),
-            backgroundColor: MaterialStateProperty.all<Color>(lightGreyButtons),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30).w))),
-        onPressed: onPressed,
-        child: SizedBox(
-          width: 250.w,
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: fontSize.sp,
-              fontWeight: mainFontWeight,
-              color: darkGreen,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

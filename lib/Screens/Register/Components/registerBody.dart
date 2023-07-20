@@ -1,9 +1,12 @@
+import 'package:authentication_task/Screens/HomePage.dart';
+import 'package:authentication_task/Screens/Login/login.dart';
+import 'package:authentication_task/components/buttons.dart';
+import 'package:authentication_task/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../components/buttons.dart';
+
 import 'package:flutter/material.dart';
-import '../../../../constants.dart';
-import '../../HomePage.dart';
-import '../../Login/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterBody extends StatefulWidget {
   const RegisterBody({Key? key}) : super(key: key);
@@ -14,7 +17,35 @@ class RegisterBody extends StatefulWidget {
 
 class _RegisterBodyState extends State<RegisterBody> {
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final CollectionReference _usersCollection =
+  FirebaseFirestore.instance.collection('users');
+  String email = '';
+  String password = '';
+  String userName = '';
 
+  Future<void> register(String email, String password) async {
+    try {
+       await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } catch (e) {
+      throw "Registration failed: ${e.toString()}";
+    }
+  }
+
+  Future<void> saveUserDataToFirestore(String userId, String firstName, String email , String password) async {
+    try {
+      await _usersCollection.doc(userId).set({
+        'username': firstName,
+        'email': email,
+        'password': password
+      });
+    } catch (e) {
+      throw "Data saving failed: ${e.toString()}";
+    }
+  }
   @override
   Widget build(BuildContext context) {
     bool emptyArea = false;
@@ -98,7 +129,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                                 color: textBlack, fontSize: subFontSize.sp),
                           ),
                           onChanged: (text){
-                            // TODO: add your code to add User Name in firestore
+                            userName = text;
                           },
                         ),
                       ),
@@ -141,7 +172,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                                 color: textBlack, fontSize: subFontSize.sp),
                           ),
                           onChanged: (text){
-                            // TODO: add your code to add the user email in firestore
+                            email = text;
                           },
                         ),
                       ),
@@ -185,7 +216,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                                 color: textBlack, fontSize: subFontSize.sp),
                           ),
                           onChanged: (text){
-                            // TODO: add your code to add the user password in firestore
+                            password = text;
                           },
                         ),
                       ),
@@ -194,16 +225,20 @@ class _RegisterBodyState extends State<RegisterBody> {
                     SizedBox(height: 30.h, width: double.infinity.w),
                     DefaultButton(
                         text: "Register",
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            emptyArea = false;
-                          }
-                          if (emptyArea == false) {
-                            await displaySnackBar("loading");
-                            // TODO: add your code to register by email & password and store the user data in firestore
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          emptyArea = false;
+                          try {
+                            await register(email, password);
+                            await saveUserDataToFirestore(_auth.currentUser!.uid, userName, email , password);
+                            await displaySnackBar("User registered successfully!");
                             Navigator.pushNamed(context, HomePage.routeName);
+                          } catch (e) {
+                            await displaySnackBar("Error: $e");
                           }
-                        }),
+                        }
+                      },
+                    ),
 ///////////////////////////////////////////////////////////////////////////////////
                     SizedBox(height: 20.h, width: double.infinity.w),
                     Text(

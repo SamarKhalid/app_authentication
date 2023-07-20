@@ -1,8 +1,9 @@
 import 'package:authentication_task/Screens/Register/register.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../components/buttons.dart';
 import 'package:flutter/material.dart';
-import '../../../../constants.dart';
+
+import '../../../components/buttons.dart';
+import '../../../constants.dart';
 import '../../HomePage.dart';
 
 class LoginBody extends StatefulWidget {

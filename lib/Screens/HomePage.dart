@@ -1,5 +1,6 @@
+import 'package:authentication_task/constants.dart';
 import 'package:flutter/material.dart';
-import '../../../../constants.dart';
+
 
 class HomePage extends StatelessWidget {
   static String routeName = "/HomePage";

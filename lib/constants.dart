@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-const textWhite = Color(0xFFFFFFFF);
 const lightGreyButtons = Color(0xFFE9E9E8);
 const darkGreen = Color(0xFF395A64);
 const textBlack = Color(0xFF000000);
 const darkBlue = Color(0xFF061C57);
 const lightGreyReceiptBG = Color(0xFFACB4CC);
+const Color textWhite = Colors.white;
 
 
 

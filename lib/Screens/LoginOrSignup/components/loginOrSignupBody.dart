@@ -1,9 +1,10 @@
+import 'package:authentication_task/Screens/Login/login.dart';
 import 'package:authentication_task/Screens/Register/register.dart';
+import 'package:authentication_task/components/buttons.dart';
+import 'package:authentication_task/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../components/buttons.dart';
 import 'package:flutter/material.dart';
-import '../../../../constants.dart';
-import '../../Login/login.dart';
+
 
 
 class LogInOrSignupBody extends StatelessWidget {
@@ -36,7 +37,7 @@ class LogInOrSignupBody extends StatelessWidget {
         height: 25.h,
         width: double.infinity.w,
       ),
-      SecondaryButton(
+      DefaultButton(
         text: "Register",
         onPressed: () {
           Navigator.pushNamed(context, Register.routeName);
