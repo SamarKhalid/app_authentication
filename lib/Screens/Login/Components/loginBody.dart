@@ -1,10 +1,13 @@
 import 'package:authentication_task/Screens/Register/register.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+import 'package:authentication_task/Screens/HomePage.dart';
+import 'package:authentication_task/components/buttons.dart';
+import 'package:authentication_task/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../../components/buttons.dart';
-import '../../../constants.dart';
-import '../../HomePage.dart';
+
 
 class LoginBody extends StatefulWidget {
   const LoginBody({Key? key}) : super(key: key);
@@ -15,8 +18,10 @@ class LoginBody extends StatefulWidget {
 
 class _LoginBodyState extends State<LoginBody> {
   final _formKey = GlobalKey<FormState>();
-
-  // TODO: Create Your Variables Here
+  final CollectionReference _usersCollection =
+  FirebaseFirestore.instance.collection('users');
+  String email = '';
+  String password = '';
 
 
   @override
@@ -102,7 +107,7 @@ class _LoginBodyState extends State<LoginBody> {
                             color: textBlack, fontSize: subFontSize.sp),
                       ),
                       onChanged: (text){
-                        // TODO: add your code to fetch the user email
+                        email = text;
                       },
                     ),
                   ),
@@ -145,25 +150,29 @@ class _LoginBodyState extends State<LoginBody> {
                             color: textBlack, fontSize: subFontSize.sp),
                       ),
                       onChanged: (text){
-                        // TODO: add your code to fetch the user password
+                        password = text;
                       },
                     ),
                   ),
                 ),
 ///////////////////////////////////////////////////////////////////////////////////
                 SizedBox(height: 30.h, width: double.infinity.w),
-                DefaultButton(
-                    text: "Log in",
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        emptyArea = false;
-                      }
-                      if (emptyArea == false) {
-                        await displaySnackBar("loading");
-                        // TODO: add your code to log in by email & password
-                        Navigator.pushNamed(context, HomePage.routeName);
-                      }
-                    }),
+        DefaultButton(
+          text: "Log in",
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              emptyArea = false;
+            }
+            if (emptyArea == false) {
+              bool signInSuccessful = await signInUser(email, password);
+              if (signInSuccessful) {
+                Navigator.pushNamed(context, HomePage.routeName);
+              } else {
+                print("wrong email or password");
+              }
+            }
+          },
+        ),
 ///////////////////////////////////////////////////////////////////////////////////
                 SizedBox(height: 20.h, width: double.infinity.w),
                 Text(
@@ -192,6 +201,18 @@ class _LoginBodyState extends State<LoginBody> {
     ));
   }
 
-  // TODO: Create Your Functions Here
+  Future<bool> signInUser(String email, String password) async {
+    try {
+      QuerySnapshot snapshot = await _usersCollection
+          .where('email', isEqualTo: email)
+          .where('password', isEqualTo: password)
+          .get();
+
+      return snapshot.size == 1;
+    } catch (e) {
+      displaySnackBar("Error: ${e.toString()}");
+      return false;
+    }
+  }
 
 }
