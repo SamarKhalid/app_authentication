@@ -62,7 +62,6 @@ class _LoginBodyState extends State<LoginBody> {
               ),
             ),
           ),
-///////////////////////////////////////////////////////////////////////////////////
 
           SizedBox(width: double.infinity.w, height: 40.h),
           Form(
